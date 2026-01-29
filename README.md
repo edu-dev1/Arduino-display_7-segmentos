@@ -2,8 +2,8 @@
 Display de 7 segmentos.
 
 ## Features
--Easy to use.
--Compatible with Arduino.
+- Easy to use.
+- Compatible with Arduino.
 
 ## Example of usage
 ```c++
