@@ -90,7 +90,7 @@ void Display::print(int number){
     }
 }
 
-void Display::print(char* string, unsigned long ms){
+void Display::print(const char* string, unsigned long ms){
     const uint16_t L_A[] = {__a, __b, __c, __e, __f, __g};
     const uint16_t L_b[] = {__c, __d, __e, __f, __g};
     const uint16_t L_C[] = {__a, __d, __e, __f};
