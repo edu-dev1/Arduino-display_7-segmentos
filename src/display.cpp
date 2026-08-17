@@ -52,7 +52,7 @@ Display::Display(uint16_t segments[S], bool common_cathode){
     }
 }
 
-void Display::print(int number){
+void Display::print(uint16_t number){
 
     const uint16_t N0[6] = {__a, __b, __c, __d, __e, __f};
     const uint16_t N1[2] = {__b, __c};
@@ -152,30 +152,30 @@ void Display::print(const char* string, unsigned long ms){
         if (string[i] == ' ') {
             low();
             delay(ms);
-        }
-
-        bool found = false;
-        const PairC* letter = nullptr;
-
-        // Buscar letra
-        for (int j = 0; j < PairsC; j++) {
-            if (string[i] == LETTERS[j].c) {
-                letter = &LETTERS[j];
-                found = true;
-                break;
+        }else{
+            bool found = false;
+            const PairC* letter = nullptr;
+    
+            // Buscar letra
+            for (int j = 0; j < PairsC; j++) {
+                if (string[i] == LETTERS[j].c) {
+                    letter = &LETTERS[j];
+                    found = true;
+                    break;
+                }
             }
-        }
-
-        // Encender segmentos
-        for (uint16_t i = 0; i < S; i++) {
-            bool on = false;
-            if (found) {
-                on = __segment_in(__segments[i], letter->Cc, letter->size);
+    
+            // Encender segmentos
+            for (uint16_t i = 0; i < S; i++) {
+                bool on = false;
+                if (found) {
+                    on = __segment_in(__segments[i], letter->Cc, letter->size);
+                }
+                else {
+                    on = (__segments[i] == __g);
+                }
+                digitalWrite(__segments[i], on ? __state_on : __state_off);
             }
-            else {
-                on = (__segments[i] == __g);
-            }
-            digitalWrite(__segments[i], on ? __state_on : __state_off);
         }
         delay(ms);
         i++;
