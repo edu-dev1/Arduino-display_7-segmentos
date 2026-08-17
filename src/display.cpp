@@ -105,7 +105,7 @@ void Display::print(char* string, unsigned long ms){
     const uint16_t L_J[] = {__b, __c, __d};
     const uint16_t L_L[] = {__d, __e, __f};
     const uint16_t L_o[] = {__c, __d, __e, __g};
-    const uint16_t L_P[] = {__a, __b, __c, __e, __f, __g};
+   const uint16_t L_P[] = {__a, __b, __e, __f, __g};
     const uint16_t L_r[] = {__e, __f, __g};
     const uint16_t L_S[] = {__a, __c, __d, __f, __g};
     const uint16_t L_U[] = {__b, __c, __d, __e, __f};
