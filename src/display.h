@@ -2,31 +2,35 @@
 #define display_h
 
 #include <Arduino.h>
-#include <string.h>
 
-class Display{
+#define S 7
+
+class Display{//A 7 Segments Display class.
     public:
-        Display(int, int, int, int, int, int, int, bool);
-        void print_number(int);
-        void print_string(String, int);
-        void print_char(char);
-        void high(void);
-        void low(void);
+        Display(uint16_t a, uint16_t b, uint16_t c, uint16_t d, uint16_t e, uint16_t f, uint16_t g, bool common_cathode);
+        Display(uint16_t segments[S], bool common_cathode);
+        void print(int n); //Displays a number between 0 and 9.
+        void print(char* string, unsigned long ms); //Displays the characters (or a hyphen "-" if they are not available) of `string`, with a delay of `ms` between each character.
+        void print(char character); //Displays the char `character` (or a hyphen "-" if they are not available).
+        void high(void); //Turns on the display
+        void low(void); //Turns off the display
     private:
-        int self_a, self_b, self_c, self_d, self_e, self_f, self_g;
-        bool self_common_cathode;
-        int self_state_on, self_state_off;
-
+        uint16_t __a, __b, __c, __d, __e, __f, __g;
+        bool __common_cathode;
+        int __state_on, __state_off;
+        const short int PairsC = 32;
+        const short int PairsN = 10;
+        uint16_t __segments[S];
         struct PairN{
             int n;
-            const int *Nn;
-            uint8_t size;
+            const uint16_t *Nn;
+            uint16_t size;
         };
         struct PairC{
             char c;
-            const int *Cc;
-            uint8_t size;
+            const uint16_t *Cc;
+            uint16_t size;
         };
-        bool __segment_in(int s, const int *N, int size);
+        bool __segment_in(uint16_t s, const uint16_t *N, uint16_t size);
 };
 #endif

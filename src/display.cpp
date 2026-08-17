@@ -1,46 +1,71 @@
 #include <display.h>
         
-Display::Display(int a, int b, int c, int d, int e, int f, int g, bool common_cathode){//
-    self_a = a;
-    self_b = b;
-    self_c = c;
-    self_d = d;
-    self_e = e;
-    self_f = f;
-    self_g = g;
-    self_common_cathode = common_cathode;
-    
-    pinMode(self_a, OUTPUT);
-    pinMode(self_b, OUTPUT);
-    pinMode(self_c, OUTPUT);
-    pinMode(self_d, OUTPUT);
-    pinMode(self_e, OUTPUT);
-    pinMode(self_f, OUTPUT);
-    pinMode(self_g, OUTPUT);
+Display::Display(uint16_t a, uint16_t b, uint16_t c, uint16_t d, uint16_t e, uint16_t f, uint16_t g, bool common_cathode){
+    __a = a;
+    __b = b;
+    __c = c;
+    __d = d;
+    __e = e;
+    __f = f;
+    __g = g;
+    __common_cathode = common_cathode;
 
-    if (self_common_cathode){
-        self_state_on = 1;
-        self_state_off = 0;
+    if (__common_cathode){
+        __state_on = HIGH;
+        __state_off = LOW;
     }else{
-        self_state_on = 0;
-        self_state_off = 1;
+        __state_on = LOW;
+        __state_off = HIGH;
+    }
+
+    const uint16_t seg_aux[S] = {__a, __b, __c, __d, __e, __f, __g};
+    for(int i = 0; i < S; i++){
+        __segments[i] = seg_aux[i];
+        pinMode(__segments[i], OUTPUT);
+    }
+
+}
+
+Display::Display(uint16_t segments[S], bool common_cathode){
+    
+    __a = segments[0];
+    __b = segments[1];
+    __c = segments[2];
+    __d = segments[3];
+    __e = segments[4];
+    __f = segments[5];
+    __g = segments[6];
+
+    const uint16_t seg_aux[S] = {__a, __b, __c, __d, __e, __f, __g};
+    for(int i = 0; i < S; i++){
+        __segments[i] = seg_aux[i];
+        pinMode(__segments[i], OUTPUT);
+    }
+    
+    __common_cathode = common_cathode;
+    if (__common_cathode){
+        __state_on = HIGH;
+        __state_off = LOW;
+    }else{
+        __state_on = LOW;
+        __state_off = HIGH;
     }
 }
-void Display::print_number(int number){//Muestra un número del 0-9.
 
-    const int N0[6] = {self_a, self_b, self_c, self_d, self_e, self_f};
-    const int N1[2] = {self_b, self_c};
-    const int N2[5] = {self_a, self_b, self_d, self_e, self_g};
-    const int N3[5] = {self_a, self_b, self_c, self_d, self_g};
-    const int N4[4] = {self_b, self_c, self_f, self_g};
-    const int N5[5] = {self_a, self_c, self_d, self_f, self_g};
-    const int N6[6] = {self_a, self_c, self_d, self_e, self_f, self_g};
-    const int N7[3] = {self_a, self_b, self_c};
-    const int N8[7] = {self_a, self_b, self_c, self_d, self_e, self_f, self_g};
-    const int N9[5] = {self_a, self_b, self_c, self_f, self_g};
-    const int self_SEGMENTS[7] = {self_a, self_b, self_c, self_d, self_e, self_f, self_g};
+void Display::print(int number){
+
+    const uint16_t N0[6] = {__a, __b, __c, __d, __e, __f};
+    const uint16_t N1[2] = {__b, __c};
+    const uint16_t N2[5] = {__a, __b, __d, __e, __g};
+    const uint16_t N3[5] = {__a, __b, __c, __d, __g};
+    const uint16_t N4[4] = {__b, __c, __f, __g};
+    const uint16_t N5[5] = {__a, __c, __d, __f, __g};
+    const uint16_t N6[6] = {__a, __c, __d, __e, __f, __g};
+    const uint16_t N7[3] = {__a, __b, __c};
+    const uint16_t N8[7] = {__a, __b, __c, __d, __e, __f, __g};
+    const uint16_t N9[5] = {__a, __b, __c, __f, __g};
     
-    const PairN NUMBERS[] = {
+    const PairN NUMBERS[PairsN] = {
         {0, N0, sizeof(N0) / sizeof(N0[0])},
         {1, N1, sizeof(N1) / sizeof(N1[0])},
         {2, N2, sizeof(N2) / sizeof(N2[0])},
@@ -53,41 +78,40 @@ void Display::print_number(int number){//Muestra un número del 0-9.
         {9, N9, sizeof(N9) / sizeof(N9[0])}
     };
 
-    for (int segment : self_SEGMENTS){
+    for (uint16_t i = 0; i < S; i++){
         bool on = false;
-        for (int j = 0; j < 10; j++){
+        for (int j = 0; j < PairsN; j++){
             if (NUMBERS[j].n == number){
-                on = __segment_in(segment, NUMBERS[j].Nn, NUMBERS[j].size);
+                on = __segment_in(__segments[i], NUMBERS[j].Nn, NUMBERS[j].size);
                 break;
             }
         }
-        digitalWrite(segment, on ? self_state_on : self_state_off);
+        digitalWrite(__segments[i], on ? __state_on : __state_off);
     }
 }
 
-void Display::print_string(String string, int seconds){//Muestra los caracteres (- si no está disponible) de una cadena esperando los segundos dados entre caracteres.
-    const int L_A[] = {self_a, self_b, self_c, self_e, self_f, self_g};
-    const int L_b[] = {self_c, self_d, self_e, self_f, self_g};
-    const int L_c[] = {self_d, self_e, self_g};
-    const int L_d[] = {self_b, self_c, self_d, self_e, self_g};
-    const int L_E[] = {self_a, self_d, self_e, self_f, self_g};
-    const int L_F[] = {self_a, self_e, self_f, self_g};
-    const int L_g[] = {self_a, self_b, self_c, self_d, self_f, self_g};
-    const int L_H[] = {self_b, self_c, self_e, self_f, self_g};
-    const int L_h[] = {self_c, self_e, self_f, self_g};
-    const int L_I[] = {self_e, self_f};
-    const int L_i[] = {self_e};
-    const int L_J[] = {self_b, self_c, self_d};
-    const int L_L[] = {self_d, self_e, self_f};
-    const int L_o[] = {self_c, self_d, self_e, self_g};
-    const int L_P[] = {self_a, self_b, self_c, self_e, self_f, self_g};
-    const int L_r[] = {self_e, self_f, self_g};
-    const int L_S[] = {self_a, self_c, self_d, self_f, self_g};
-    const int L_U[] = {self_b, self_c, self_d, self_e, self_f};
-    const int L_u[] = {self_c, self_d, self_e};
-    const int self_SEGMENTS[7] = {self_a, self_b, self_c, self_d, self_e, self_f, self_g};
+void Display::print(char* string, unsigned long ms){
+    const uint16_t L_A[] = {__a, __b, __c, __e, __f, __g};
+    const uint16_t L_b[] = {__c, __d, __e, __f, __g};
+    const uint16_t L_c[] = {__d, __e, __g};
+    const uint16_t L_d[] = {__b, __c, __d, __e, __g};
+    const uint16_t L_E[] = {__a, __d, __e, __f, __g};
+    const uint16_t L_F[] = {__a, __e, __f, __g};
+    const uint16_t L_g[] = {__a, __b, __c, __d, __f, __g};
+    const uint16_t L_H[] = {__b, __c, __e, __f, __g};
+    const uint16_t L_h[] = {__c, __e, __f, __g};
+    const uint16_t L_I[] = {__e, __f};
+    const uint16_t L_i[] = {__e};
+    const uint16_t L_J[] = {__b, __c, __d};
+    const uint16_t L_L[] = {__d, __e, __f};
+    const uint16_t L_o[] = {__c, __d, __e, __g};
+    const uint16_t L_P[] = {__a, __b, __c, __e, __f, __g};
+    const uint16_t L_r[] = {__e, __f, __g};
+    const uint16_t L_S[] = {__a, __c, __d, __f, __g};
+    const uint16_t L_U[] = {__b, __c, __d, __e, __f};
+    const uint16_t L_u[] = {__c, __d, __e};
 
-    const PairC LETTERS[] = {
+    const PairC LETTERS[PairsC] = {
         {'A', L_A, sizeof(L_A) / sizeof(L_A[0])},
         {'a', L_A, sizeof(L_A) / sizeof(L_A[0])},
         {'B', L_b, sizeof(L_b) / sizeof(L_b[0])},
@@ -121,11 +145,11 @@ void Display::print_string(String string, int seconds){//Muestra los caracteres 
         {'U', L_U, sizeof(L_U) / sizeof(L_U[0])},
         {'u', L_u, sizeof(L_u) / sizeof(L_u[0])}
     };
-    
-    for (char c : string) {
-        if (c == ' ') {
+    int i = 0;
+    while (string[i] != '\0') {
+        if (string[i] == ' ') {
             low();
-            delay(seconds * 1000);
+            delay(ms);
             continue;
         }
 
@@ -133,8 +157,8 @@ void Display::print_string(String string, int seconds){//Muestra los caracteres 
         const PairC* letter = nullptr;
 
         // Buscar letra
-        for (int j = 0; j < 32; j++) {
-            if (c == LETTERS[j].c) {
+        for (int j = 0; j < PairsC; j++) {
+            if (string[i] == LETTERS[j].c) {
                 letter = &LETTERS[j];
                 found = true;
                 break;
@@ -142,43 +166,43 @@ void Display::print_string(String string, int seconds){//Muestra los caracteres 
         }
 
         // Encender segmentos
-        for (int segment : self_SEGMENTS) {
+        for (uint16_t i = 0; i < S; i++) {
             bool on = false;
             if (found) {
-                on = __segment_in(segment, letter->Cc, letter->size);
+                on = __segment_in(__segments[i], letter->Cc, letter->size);
             }
             else {
-                on = (segment == self_g);
+                on = (__segments[i] == __g);
             }
-            digitalWrite(segment, on ? self_state_on : self_state_off);
+            digitalWrite(__segments[i], on ? __state_on : __state_off);
         }
-        delay(seconds * 1000);
+        delay(ms);
+        i++;
     }
 }
 
-void Display::print_char(char ch){//Muestra un caracter (- si no está disponible).
-    const int L_A[] = {self_a, self_b, self_c, self_e, self_f, self_g};
-    const int L_b[] = {self_c, self_d, self_e, self_f, self_g};
-    const int L_c[] = {self_d, self_e, self_g};
-    const int L_d[] = {self_b, self_c, self_d, self_e, self_g};
-    const int L_E[] = {self_a, self_d, self_e, self_f, self_g};
-    const int L_F[] = {self_a, self_e, self_f, self_g};
-    const int L_g[] = {self_a, self_b, self_c, self_d, self_f, self_g};
-    const int L_H[] = {self_b, self_c, self_e, self_f, self_g};
-    const int L_h[] = {self_c, self_e, self_f, self_g};
-    const int L_I[] = {self_e, self_f};
-    const int L_i[] = {self_e};
-    const int L_J[] = {self_b, self_c, self_d};
-    const int L_L[] = {self_d, self_e, self_f};
-    const int L_o[] = {self_c, self_d, self_e, self_g};
-    const int L_P[] = {self_a, self_b, self_c, self_e, self_f, self_g};
-    const int L_r[] = {self_e, self_f, self_g};
-    const int L_S[] = {self_a, self_c, self_d, self_f, self_g};
-    const int L_U[] = {self_b, self_c, self_d, self_e, self_f};
-    const int L_u[] = {self_c, self_d, self_e};
-    const int self_SEGMENTS[7] = {self_a, self_b, self_c, self_d, self_e, self_f, self_g};
-
-    const PairC LETTERS[] = {
+void Display::print(char character){
+    const uint16_t L_A[] = {__a, __b, __c, __e, __f, __g};
+    const uint16_t L_b[] = {__c, __d, __e, __f, __g};
+    const uint16_t L_c[] = {__d, __e, __g};
+    const uint16_t L_d[] = {__b, __c, __d, __e, __g};
+    const uint16_t L_E[] = {__a, __d, __e, __f, __g};
+    const uint16_t L_F[] = {__a, __e, __f, __g};
+    const uint16_t L_g[] = {__a, __b, __c, __d, __f, __g};
+    const uint16_t L_H[] = {__b, __c, __e, __f, __g};
+    const uint16_t L_h[] = {__c, __e, __f, __g};
+    const uint16_t L_I[] = {__e, __f};
+    const uint16_t L_i[] = {__e};
+    const uint16_t L_J[] = {__b, __c, __d};
+    const uint16_t L_L[] = {__d, __e, __f};
+    const uint16_t L_o[] = {__c, __d, __e, __g};
+    const uint16_t L_P[] = {__a, __b, __c, __e, __f, __g};
+    const uint16_t L_r[] = {__e, __f, __g};
+    const uint16_t L_S[] = {__a, __c, __d, __f, __g};
+    const uint16_t L_U[] = {__b, __c, __d, __e, __f};
+    const uint16_t L_u[] = {__c, __d, __e};
+     
+    const PairC LETTERS[PairsC] = {
         {'A', L_A, sizeof(L_A) / sizeof(L_A[0])},
         {'a', L_A, sizeof(L_A) / sizeof(L_A[0])},
         {'B', L_b, sizeof(L_b) / sizeof(L_b[0])},
@@ -217,8 +241,8 @@ void Display::print_char(char ch){//Muestra un caracter (- si no está disponibl
     const PairC* letter = nullptr;
 
     // Buscar letra
-    for (int j = 0; j < 32; j++) {
-        if (ch == LETTERS[j].c) {
+    for (int j = 0; j < PairsC; j++) {
+        if (character == LETTERS[j].c) {
             letter = &LETTERS[j];
             found = true;
             break;
@@ -226,34 +250,32 @@ void Display::print_char(char ch){//Muestra un caracter (- si no está disponibl
     }
 
     // Encender segmentos
-    for (int segment : self_SEGMENTS) {
+    for (uint16_t i = 0; i < S; i++) {
         bool on = false;
         if (found) {
-            on = __segment_in(segment, letter->Cc, letter->size);
+            on = __segment_in(__segments[i], letter->Cc, letter->size);
         }
         else {
-            on = (segment == self_g);
+            on = (__segments[i] == __g);
         }
-        digitalWrite(segment, on ? self_state_on : self_state_off);
+        digitalWrite(__segments[i], on ? __state_on : __state_off);
     }
 }
-void Display::high(void){//Enciende el display.
-    const int self_SEGMENTS[7] = {self_a, self_b, self_c, self_d, self_e, self_f, self_g};
-    for (int segment : self_SEGMENTS){
-        digitalWrite(segment, self_state_on);
-    }
-}
-
-void Display::low(void){//Apaga el display.
-    const int self_SEGMENTS[7] = {self_a, self_b, self_c, self_d, self_e, self_f, self_g};
-    for (int segment : self_SEGMENTS){
-        digitalWrite(segment, self_state_off);
+void Display::high(void){
+    for (uint16_t s = 0; s < S; s++){
+        digitalWrite(__segments[s], __state_on);
     }
 }
 
-bool Display::__segment_in(int s, const int *N, int size){
+void Display::low(void){
+    for (uint16_t s = 0; s < S; s++){
+        digitalWrite(__segments[s], __state_off);
+    }
+}
+
+bool Display::__segment_in(uint16_t s, const uint16_t *N, uint16_t size){
     bool segment_in = false;
-    for(int i = 0; i < size; i++){
+    for(uint16_t i = 0; i < size; i++){
         if (s == N[i]){
             segment_in = true;
             break;
