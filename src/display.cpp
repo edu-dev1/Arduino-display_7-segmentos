@@ -93,6 +93,7 @@ void Display::print(int number){
 void Display::print(char* string, unsigned long ms){
     const uint16_t L_A[] = {__a, __b, __c, __e, __f, __g};
     const uint16_t L_b[] = {__c, __d, __e, __f, __g};
+    const uint16_t L_C[] = {__a, __d, __e, __f};
     const uint16_t L_c[] = {__d, __e, __g};
     const uint16_t L_d[] = {__b, __c, __d, __e, __g};
     const uint16_t L_E[] = {__a, __d, __e, __f, __g};
@@ -105,7 +106,7 @@ void Display::print(char* string, unsigned long ms){
     const uint16_t L_J[] = {__b, __c, __d};
     const uint16_t L_L[] = {__d, __e, __f};
     const uint16_t L_o[] = {__c, __d, __e, __g};
-   const uint16_t L_P[] = {__a, __b, __e, __f, __g};
+    const uint16_t L_P[] = {__a, __b, __e, __f, __g};
     const uint16_t L_r[] = {__e, __f, __g};
     const uint16_t L_S[] = {__a, __c, __d, __f, __g};
     const uint16_t L_U[] = {__b, __c, __d, __e, __f};
@@ -116,7 +117,7 @@ void Display::print(char* string, unsigned long ms){
         {'a', L_A, sizeof(L_A) / sizeof(L_A[0])},
         {'B', L_b, sizeof(L_b) / sizeof(L_b[0])},
         {'b', L_b, sizeof(L_b) / sizeof(L_b[0])},
-        {'C', L_c, sizeof(L_c) / sizeof(L_c[0])},
+        {'C', L_C, sizeof(L_C) / sizeof(L_C[0])},
         {'c', L_c, sizeof(L_c) / sizeof(L_c[0])},
         {'D', L_d, sizeof(L_d) / sizeof(L_d[0])},
         {'d', L_d, sizeof(L_d) / sizeof(L_d[0])},
@@ -183,6 +184,7 @@ void Display::print(char* string, unsigned long ms){
 void Display::print(char character){
     const uint16_t L_A[] = {__a, __b, __c, __e, __f, __g};
     const uint16_t L_b[] = {__c, __d, __e, __f, __g};
+    const uint16_t L_C[] = {__a, __d, __e, __f};
     const uint16_t L_c[] = {__d, __e, __g};
     const uint16_t L_d[] = {__b, __c, __d, __e, __g};
     const uint16_t L_E[] = {__a, __d, __e, __f, __g};
@@ -206,7 +208,7 @@ void Display::print(char character){
         {'a', L_A, sizeof(L_A) / sizeof(L_A[0])},
         {'B', L_b, sizeof(L_b) / sizeof(L_b[0])},
         {'b', L_b, sizeof(L_b) / sizeof(L_b[0])},
-        {'C', L_c, sizeof(L_c) / sizeof(L_c[0])},
+        {'C', L_C, sizeof(L_C) / sizeof(L_C[0])},
         {'c', L_c, sizeof(L_c) / sizeof(L_c[0])},
         {'D', L_d, sizeof(L_d) / sizeof(L_d[0])},
         {'d', L_d, sizeof(L_d) / sizeof(L_d[0])},
@@ -260,6 +262,7 @@ void Display::print(char character){
         digitalWrite(__segments[i], on ? __state_on : __state_off);
     }
 }
+
 void Display::high(void){
     for (uint16_t s = 0; s < S; s++){
         digitalWrite(__segments[s], __state_on);
