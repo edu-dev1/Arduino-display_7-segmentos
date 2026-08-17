@@ -150,7 +150,6 @@ void Display::print(char* string, unsigned long ms){
         if (string[i] == ' ') {
             low();
             delay(ms);
-            continue;
         }
 
         bool found = false;
