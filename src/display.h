@@ -17,12 +17,12 @@ class Display{//A 7 Segments Display class.
     private:
         uint16_t __a, __b, __c, __d, __e, __f, __g;
         bool __common_cathode;
-        int __state_on, __state_off;
+        bool __state_on, __state_off;
         const short int PairsC = 32;
         const short int PairsN = 10;
         uint16_t __segments[S];
         struct PairN{
-            int n;
+            uint16_t n;
             const uint16_t *Nn;
             uint16_t size;
         };
