@@ -7,26 +7,36 @@ A simple Arduino library for 7-segments Display.
 
 ## Example of usage
 ```c++
+#include <Arduino.h>
 #include <display.h>
 
-/*---Creating the object my_display---*/
-int a_seg = 1, b_seg = 2, c_seg = 3, d_seg = 4, e_seg = 5, f_seg = 6, g_seg = 7;
-bool common_cathode = true;
-Display my_display(a_seg, b_seg, c_seg, d_seg, e_seg, f_seg, g_seg, common_cathode);
+uint16_t segs[7] = {2, 3, 4, 5, 6, 7, 8};
+bool is_common_cathode = true;
+Display my_display(segs, is_common_cathode);
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Arduino ready");
+  Serial.println("Arduino listo");
 }
 
 void loop() {
-  my_display.high();//Turns on all segments
+  /*Turn on*/
+  my_display.high();
   delay(500);
-  for (int n = 0; n < 10; n++){
-    my_display.print_number(n);//displays the numbers from 0 to 9
-    Serial.println(n);
+  /*Displaying numbers*/
+  for (int i = 0; i < 10; i++){
+    my_display.print(i);
+    Serial.println(i);
     delay(500);
   }
-  my_display.low();//Turns off all segments
+  /*Displaying a character*/
+  my_display.print('E');
+  delay(500);
+  /*Displaying a string*/
+  my_display.print("Seven Segments Display", 500);
+  delay(500);
+  /*Turn off*/
+  my_display.low();
   delay(500);
 }
+```
