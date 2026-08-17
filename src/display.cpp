@@ -103,6 +103,7 @@ void Display::print(char* string, unsigned long ms){
     const uint16_t L_h[] = {__c, __e, __f, __g};
     const uint16_t L_I[] = {__e, __f};
     const uint16_t L_i[] = {__e};
+    const uint16_t L_j[] = {__c, __d};
     const uint16_t L_J[] = {__b, __c, __d};
     const uint16_t L_L[] = {__d, __e, __f};
     const uint16_t L_o[] = {__c, __d, __e, __g};
@@ -132,7 +133,7 @@ void Display::print(char* string, unsigned long ms){
         {'I', L_I, sizeof(L_I) / sizeof(L_I[0])},
         {'i', L_i, sizeof(L_i) / sizeof(L_i[0])},
         {'J', L_J, sizeof(L_J) / sizeof(L_J[0])},
-        {'j', L_J, sizeof(L_J) / sizeof(L_J[0])},
+        {'j', L_j, sizeof(L_j) / sizeof(L_j[0])},
         {'L', L_L, sizeof(L_L) / sizeof(L_L[0])},
         {'l', L_L, sizeof(L_L) / sizeof(L_L[0])},
         {'O', L_o, sizeof(L_o) / sizeof(L_o[0])},
@@ -195,6 +196,7 @@ void Display::print(char character){
     const uint16_t L_I[] = {__e, __f};
     const uint16_t L_i[] = {__e};
     const uint16_t L_J[] = {__b, __c, __d};
+    const uint16_t L_j[] = {__c, __d};
     const uint16_t L_L[] = {__d, __e, __f};
     const uint16_t L_o[] = {__c, __d, __e, __g};
     const uint16_t L_P[] = {__a, __b, __e, __f, __g};
@@ -223,7 +225,7 @@ void Display::print(char character){
         {'I', L_I, sizeof(L_I) / sizeof(L_I[0])},
         {'i', L_i, sizeof(L_i) / sizeof(L_i[0])},
         {'J', L_J, sizeof(L_J) / sizeof(L_J[0])},
-        {'j', L_J, sizeof(L_J) / sizeof(L_J[0])},
+        {'j', L_j, sizeof(L_j) / sizeof(L_j[0])},
         {'L', L_L, sizeof(L_L) / sizeof(L_L[0])},
         {'l', L_L, sizeof(L_L) / sizeof(L_L[0])},
         {'O', L_o, sizeof(L_o) / sizeof(L_o[0])},
@@ -262,7 +264,6 @@ void Display::print(char character){
         digitalWrite(__segments[i], on ? __state_on : __state_off);
     }
 }
-
 void Display::high(void){
     for (uint16_t s = 0; s < S; s++){
         digitalWrite(__segments[s], __state_on);
