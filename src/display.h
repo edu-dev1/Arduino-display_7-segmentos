@@ -10,7 +10,7 @@ class Display{//A 7 Segments Display class.
         Display(uint16_t a, uint16_t b, uint16_t c, uint16_t d, uint16_t e, uint16_t f, uint16_t g, bool common_cathode);
         Display(uint16_t segments[S], bool common_cathode);
         void print(int n); //Displays a number between 0 and 9.
-        void print(char* string, unsigned long ms); //Displays the characters (or a hyphen "-" if they are not available) of `string`, with a delay of `ms` between each character.
+        void print(const char* string, unsigned long ms); //Displays the characters (or a hyphen "-" if they are not available) of `string`, with a delay of `ms` between each character.
         void print(char character); //Displays the char `character` (or a hyphen "-" if they are not available).
         void high(void); //Turns on the display
         void low(void); //Turns off the display
